@@ -1,19 +1,9 @@
-import { useEffect, useState } from 'react'
+import Home from './components/Home'
 
 const App = () => {
-  const [message, setMessage] = useState("Ladataan...")
-
-  useEffect(() => {
-    fetch("http://localhost:8000/api/message/")
-      .then(res => res.json())
-      .then(data => setMessage(data.message))
-      .catch(err => setMessage("Virhe haussa: " + err.message))
-  }, [])
-
   return (
     <div>
-      <h1>Etusivu</h1>
-      <p>{message}</p>
+      <Home />
     </div>
   )
 }
