@@ -20,12 +20,12 @@ from django.http import JsonResponse
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
-def message_view(request):
+def home_view(request):
     return JsonResponse({"message": "Tervetuloa ZClosetiin!"})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/message/', message_view),
+    path('', home_view),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include('users.urls')),

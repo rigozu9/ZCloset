@@ -1,19 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getWelcomeMessage } from '../api/welcome';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [message, setMessage] = useState("Ladataan...")
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/message/")
-      .then(res => res.json())
-      .then(data => setMessage(data.message))
-      .catch(err => setMessage("Virhe haussa: " + err.message))
-  }, [])
+    getWelcomeMessage()
+      .then((res) => setMessage(res.data.message))
+      .catch((err) => setMessage("Virhe: " + err.message));
+  }, []);
+  
+  const goToRegister = () => {
+    navigate('/register');
+  };
 
   return (
     <div>
       <h2>ZCloset</h2>
       <p>{message}</p>
+      <button onClick={goToRegister}>Rekisteröidy</button>
     </div>
   )
 }
