@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { login } from '../api/auth';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,11 +17,17 @@ const SignIn = () => {
     try {
       await login(username, password);
       setSuccess('Kirjautuminen onnistui!');
+      navigate('/home');
     } catch (err) {
       console.error(err);
       setError('Väärä käyttäjätunnus tai salasana.');
     }
   };
+
+  const goToRegister = () => {
+    navigate('/');
+  };
+
 
   return (
     <div>
@@ -48,6 +56,7 @@ const SignIn = () => {
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
+      <button onClick={goToRegister}>Rekisteröidy</button>
     </div>
   );
 };
