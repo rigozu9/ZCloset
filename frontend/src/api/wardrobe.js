@@ -7,3 +7,7 @@ export const uploadClothingItem = (formData) => {
     },
   });
 };
+
+export const getMyWardrobe = () => {
+  return api.get('/api/wardrobe/');
+};

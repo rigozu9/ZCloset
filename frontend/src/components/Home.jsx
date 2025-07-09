@@ -1,16 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { logout } from '../api/auth';
 import { useNavigate } from 'react-router-dom';
-import { uploadClothingItem } from '../api/wardrobe';
+import { getMyWardrobe, uploadClothingItem } from '../api/wardrobe';
 
 const Home = () => {
   const [name, setName] = useState('');
   const [image, setImage] = useState(null);
-  const [message, setMessage] = useState('');
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const [items, setItems] = useState([]);
   const navigate = useNavigate();
   
+  useEffect(() => {
+  getMyWardrobe()
+    .then(res => setItems(res.data))
+    .catch(err => {
+      console.error(err);
+      setError("Virhe haettaessa vaatteita");
+    });
+  }, []);
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -64,7 +73,18 @@ const Home = () => {
 
       {success && <p style={{ color: 'green' }}>{success}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+        {items.map((item) => (
+          <div key={item.id}>
+            <img
+              src={`http://localhost:8000${item.image}`}
+              alt={item.name}
+              style={{ width: '150px', borderRadius: '8px' }}
+            />
+            <p>{item.name}</p>
+          </div>
+        ))}
+      </div>
       <button onClick={handleLogout}>Kirjaudu ulos</button>
     </div>
   );
