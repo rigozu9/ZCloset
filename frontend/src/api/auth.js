@@ -19,3 +19,8 @@ export const logout = () => {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
 };
+
+// Hakee usernamen
+export const getUserInfo = () => {
+  return api.get('api/user/');
+};

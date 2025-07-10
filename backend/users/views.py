@@ -2,7 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -35,3 +36,10 @@ class RegisterView(APIView):
             {"message": "Käyttäjä luotu onnistuneesti!"},
             status=status.HTTP_201_CREATED
         )
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_info(request):
+    return Response({
+        'username': request.user.username
+    })
