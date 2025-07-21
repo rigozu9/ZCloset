@@ -3,21 +3,31 @@ import numpy as np
 from sklearn.cluster import KMeans
 from collections import Counter
 import webcolors
+from rembg import remove
+from PIL import Image
+import io
+
 
 def get_dominant_color(image_path, k=3):
-    image = cv2.imread(image_path)
-    if image is None:
-        raise ValueError("Kuvaa ei voitu lukea")
+    # Poista tausta
+    with open(image_path, 'rb') as f:
+        input_image = f.read()
+    output = remove(input_image)
 
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    pixels = image.reshape((-1, 3))
+    # Lue PIL-kuva ja muunna numpy-taulukoksi
+    image = Image.open(io.BytesIO(output)).convert('RGB')
+    np_image = np.array(image)
+    pixels = np_image.reshape((-1, 3))
+
+    # Poista täysin läpinäkyvät (mustat) pikselit
+    pixels = pixels[~np.all(pixels == [0, 0, 0], axis=1)]
 
     kmeans = KMeans(n_clusters=k, n_init='auto')
     kmeans.fit(pixels)
 
     counts = Counter(kmeans.labels_)
     dominant = kmeans.cluster_centers_[counts.most_common(1)[0][0]]
-    return tuple(map(int, dominant))  # esim. (124, 30, 87)
+    return tuple(map(int, dominant))
 
 CSS3_NAMES = {
     'black': '#000000',
