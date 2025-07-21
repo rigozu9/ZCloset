@@ -11,3 +11,9 @@ export const uploadClothingItem = (formData) => {
 export const getMyWardrobe = () => {
   return api.get('/api/wardrobe/');
 };
+
+export const detectClothingColor = (clothingId) => {
+  return api.post('/api/detect-color/', {
+    clothing_id: clothingId,
+  });
+};
