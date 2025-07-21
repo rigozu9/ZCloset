@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getMyWardrobe } from '../api/wardrobe';
 import { getUserInfo } from '../api/auth';
 import useNavigationHelpers from '../hooks/useNavigationHelpers';
+import WardrobeItem from '../components/WardrobeItem';
 
 const Wardrobe = () => {
   const [items, setItems] = useState([]);
@@ -32,18 +33,13 @@ const Wardrobe = () => {
     <div>
       <h2>{username ? `${username}:n vaatekaappi` : 'Oma vaatekaappi'}</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
+
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
         {items.map(item => (
-          <div key={item.id}>
-            <img
-              src={`http://localhost:8000${item.image}`}
-              alt={item.name}
-              style={{ width: '150px', borderRadius: '8px' }}
-            />
-            <p>{item.name}</p>
-          </div>
+          <WardrobeItem key={item.id} item={item} />
         ))}
       </div>
+      
       <button onClick={goToHome}>Palaa kotisivulle</button>
     </div>
   );
