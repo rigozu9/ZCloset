@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { getMyWardrobe } from '../api/wardrobe';
 import { getUserInfo } from '../api/auth';
-
+import useNavigationHelpers from '../hooks/useNavigationHelpers';
 
 const Wardrobe = () => {
   const [items, setItems] = useState([]);
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
+  const { goToHome } = useNavigationHelpers();
 
   useEffect(() => {
     // Hae vaatteet
@@ -43,6 +44,7 @@ const Wardrobe = () => {
           </div>
         ))}
       </div>
+      <button onClick={goToHome}>Palaa kotisivulle</button>
     </div>
   );
 };

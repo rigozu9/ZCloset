@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { logout, getUserInfo } from '../api/auth';
 import { useNavigate } from 'react-router-dom';
 import { uploadClothingItem } from '../api/wardrobe';
+import useNavigationHelpers from '../hooks/useNavigationHelpers';
 
 const Home = () => {
   const [username, setUsername] = useState('');
@@ -10,7 +11,8 @@ const Home = () => {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  
+  const { goToWardrobe } = useNavigationHelpers();
+
   useEffect(() => {
     getUserInfo()
       .then(res => setUsername(res.data.username))
@@ -74,7 +76,7 @@ const Home = () => {
       {success && <p style={{ color: 'green' }}>{success}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <button onClick={handleLogout}>Kirjaudu ulos</button>
-      <button onClick={() => navigate('/wardrobe')}>Näytä vaatekaappi</button>
+      <button onClick={goToWardrobe}>Näytä vaatekaappi</button>
     </div>
   );
 };

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { register } from '../api/auth';
-import { useNavigate } from 'react-router-dom';
+import useNavigationHelpers from '../hooks/useNavigationHelpers';
 
 const SignUp = () => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const { goToLogin } = useNavigationHelpers();
 
 
   const handleSubmit = async (e) => {
@@ -14,15 +14,11 @@ const SignUp = () => {
     try {
         const res = await register(userName, password)
         console.log("Rekisteröinti onnistui:", res.data);
-        navigate('/login');
+        goToLogin();
     } catch (err) {
         console.error("Rekisteröinti epäonnistui:", err);        
     }
   }
-
-  const goToLogin = () => {
-    navigate('/login');
-  };
 
   return (
     <div>

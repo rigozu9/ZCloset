@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { login } from '../api/auth';
-import { useNavigate } from 'react-router-dom';
+import useNavigationHelpers from '../hooks/useNavigationHelpers';
+
 
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const navigate = useNavigate();
+  const { goToRegister, goToHome } = useNavigationHelpers();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,17 +19,12 @@ const SignIn = () => {
     try {
       await login(username, password);
       setSuccess('Kirjautuminen onnistui!');
-      navigate('/home');
+      goToHome();
     } catch (err) {
       console.error(err);
       setError('Väärä käyttäjätunnus tai salasana.');
     }
   };
-
-  const goToRegister = () => {
-    navigate('/');
-  };
-
 
   return (
     <div>
