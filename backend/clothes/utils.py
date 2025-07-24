@@ -6,29 +6,9 @@ import webcolors
 from rembg import remove
 from PIL import Image
 import io
+import matplotlib.pyplot as plt
 
-
-def get_dominant_color(image_path, k=3):
-    # Poista tausta
-    with open(image_path, 'rb') as f:
-        input_image = f.read()
-    output = remove(input_image)
-
-    # Lue PIL-kuva ja muunna numpy-taulukoksi
-    image = Image.open(io.BytesIO(output)).convert('RGB')
-    np_image = np.array(image)
-    pixels = np_image.reshape((-1, 3))
-
-    # Poista täysin läpinäkyvät (mustat) pikselit
-    pixels = pixels[~np.all(pixels == [0, 0, 0], axis=1)]
-
-    kmeans = KMeans(n_clusters=k, n_init='auto')
-    kmeans.fit(pixels)
-
-    counts = Counter(kmeans.labels_)
-    dominant = kmeans.cluster_centers_[counts.most_common(1)[0][0]]
-    return tuple(map(int, dominant))
-
+# Laajennettu CSS3-värilista
 CSS3_NAMES = {
     'black': '#000000',
     'white': '#ffffff',
@@ -45,6 +25,22 @@ CSS3_NAMES = {
     'darkblue': '#00008b',
     'darkred': '#8b0000',
     'beige': '#f5f5dc',
+    'cyan': '#00ffff',
+    'magenta': '#ff00ff',
+    'lime': '#00ff00',
+    'navy': '#000080',
+    'teal': '#008080',
+    'maroon': '#800000',
+    'olive': '#808000',
+    'silver': '#c0c0c0',
+    'gold': '#ffd700',
+    'salmon': '#fa8072',
+    'indigo': '#4b0082',
+    'violet': '#ee82ee',
+    'coral': '#ff7f50',
+    'khaki': '#f0e68c',
+    'lavender': '#e6e6fa',
+    'chocolate': '#d2691e'
 }
 
 def closest_css_color(rgb):
@@ -62,3 +58,42 @@ def closest_css_color(rgb):
             closest_name = name
 
     return closest_name
+
+def get_dominant_color(image_path, k=3, save_cropped=True, show=False):
+    # Poista tausta
+    with open(image_path, 'rb') as f:
+        input_image = f.read()
+    output = remove(input_image)
+
+    # Lue PIL-kuva ja muunna numpy-taulukoksi
+    image = Image.open(io.BytesIO(output)).convert('RGB')
+    np_image = np.array(image)
+
+    # 💾 Tallenna aina croppattu kuva
+    if save_cropped:
+        save_and_show_cropped_image(np_image, save_path="cropped_output.png", show=show)
+
+    # Väriklusterointi
+    pixels = np_image.reshape((-1, 3))
+    pixels = pixels[~np.all(pixels == [0, 0, 0], axis=1)]  # Poista mustat pikselit
+
+    kmeans = KMeans(n_clusters=k, n_init='auto')
+    kmeans.fit(pixels)
+
+    counts = Counter(kmeans.labels_)
+    dominant = kmeans.cluster_centers_[counts.most_common(1)[0][0]]
+    return tuple(map(int, dominant))
+
+
+def save_and_show_cropped_image(np_image, save_path="cropped_output.png", show=True):
+    """
+    Tallentaa numpy-muotoisen kuvan tiedostoksi ja näyttää sen tarvittaessa.
+    
+    Args:
+        np_image (np.ndarray): Kuva numpy-muodossa
+        save_path (str): Polku tallennettavalle tiedostolle
+        show (bool): Näytetäänkö kuva matplotlibilla
+    """
+    # Muunna numpy -> PIL ja tallenna
+    pil_image = Image.fromarray(np_image)
+    pil_image.save(save_path)
