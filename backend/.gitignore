@@ -3,3 +3,4 @@ run.txt
 __pycache__
 db.sqlite3
 cropped_output.png
+media

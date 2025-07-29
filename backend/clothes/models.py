@@ -48,6 +48,7 @@ class ClothingItem(models.Model):
     image = models.ImageField(upload_to='clothing_images/', blank=True, null=True)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other')
     subcategory = models.CharField(max_length=50, choices=SUBCATEGORY_CHOICES, default='Muu vaate')
+    color = models.CharField(max_length=30, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wardrobe')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 

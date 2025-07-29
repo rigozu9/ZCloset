@@ -17,7 +17,7 @@ const WardrobeItem = ({ item }) => {
       setLoading(false);
     }
   };
-
+  console.log(item);
   return (
     <div>
       <img
@@ -26,6 +26,7 @@ const WardrobeItem = ({ item }) => {
         style={{ width: '150px', borderRadius: '8px' }}
       />
       <p>{item.name}</p>
+      <p>Item color: {item.color}</p>
       <button onClick={handleDetectColor} disabled={loading}>
         {loading ? 'Tunnistetaan...' : 'Tunnista väri'}
       </button>

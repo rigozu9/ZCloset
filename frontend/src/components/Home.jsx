@@ -45,6 +45,7 @@ const Home = () => {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('category', category);
+    formData.append('subcategory', subcategory);
     if (image) {
       formData.append('image', image);
     }

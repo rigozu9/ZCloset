@@ -18,8 +18,19 @@ class WardrobeView(APIView):
     def post(self, request):
         serializer = ClothingItemSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            item = serializer.save(user=request.user)
+        # 🔍 Tunnista väri kuvan perusteella ja tallenna se
+            if item.image:
+                try:
+                    image_path = item.image.path
+                    rgb = get_dominant_color(image_path)
+                    color_name = closest_css_color(rgb)
+                    item.color = color_name
+                    item.save(update_fields=['color'])
+                except Exception as e:
+                    print('Virhe värin tunnistuksessa:', str(e))
+
+            return Response(ClothingItemSerializer(item).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DetectColorView(APIView):
