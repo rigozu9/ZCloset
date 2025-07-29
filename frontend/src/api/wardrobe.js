@@ -17,3 +17,7 @@ export const detectClothingColor = (clothingId) => {
     clothing_id: clothingId,
   });
 };
+
+export const deleteClothingItem = (id) => {
+  return api.delete(`api/wardrobe/${id}/`);
+};

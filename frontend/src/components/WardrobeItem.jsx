@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { detectClothingColor } from '../api/wardrobe';
+import { detectClothingColor, deleteClothingItem  } from '../api/wardrobe';
 
-const WardrobeItem = ({ item }) => {
+const WardrobeItem = ({ item, onDelete }) => {
   const [color, setColor] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -18,6 +18,16 @@ const WardrobeItem = ({ item }) => {
     }
   };
   console.log(item);
+
+  const handleDelete = async () => {
+    try {
+      await deleteClothingItem(item.id);
+      onDelete(item.id); // ilmoitetaan parent-komponentille
+    } catch (err) {
+      console.error('Vaatteen poistaminen epäonnistui:', err);
+    }
+  };
+
   return (
     <div>
       <img
@@ -31,6 +41,7 @@ const WardrobeItem = ({ item }) => {
         {loading ? 'Tunnistetaan...' : 'Tunnista väri'}
       </button>
       {color && <p>Väri: {color}</p>}
+      <button onClick={handleDelete}>Poista</button>
     </div>
   );
 };

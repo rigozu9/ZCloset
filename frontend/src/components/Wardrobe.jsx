@@ -28,6 +28,10 @@ const Wardrobe = () => {
       });
   }, []);
 
+  const handleItemDelete = (id) => {
+    setItems(prev => prev.filter(item => item.id !== id));
+  };
+
 
   return (
     <div>
@@ -36,7 +40,7 @@ const Wardrobe = () => {
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
         {items.map(item => (
-          <WardrobeItem key={item.id} item={item} />
+          <WardrobeItem key={item.id} item={item} onDelete={handleItemDelete}/>
         ))}
       </div>
       

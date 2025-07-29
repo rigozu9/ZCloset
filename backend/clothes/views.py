@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import DestroyAPIView
 from rest_framework import status
 from .models import ClothingItem
 from .serializers import ClothingItemSerializer
@@ -52,3 +53,17 @@ class DetectColorView(APIView):
         except Exception as e:
             print('Virhe värin tunnistuksessa:', str(e))
             return Response({ 'error': 'Tunnistus epäonnistui' }, status=500)
+        
+class ClothingItemDeleteView(DestroyAPIView):
+    serializer_class = ClothingItemSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        print(f"[DEBUG] get_queryset: käyttäjä = {self.request.user}")
+        qs = ClothingItem.objects.filter(user=self.request.user)
+        print(f"[DEBUG] käyttäjän omat vaatteet: {[item.id for item in qs]}")
+        return qs
+
+    def delete(self, request, *args, **kwargs):
+        print(f"[DEBUG] Poistetaan vaate id = {kwargs.get('pk')}, käyttäjä = {request.user}")
+        return super().delete(request, *args, **kwargs)
