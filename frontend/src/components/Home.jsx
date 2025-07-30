@@ -13,6 +13,7 @@ const Home = () => {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const { goToWardrobe } = useNavigationHelpers();
 
   const subcategoryMap = {
@@ -42,6 +43,7 @@ const Home = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
+    setIsLoading(true);
     const formData = new FormData();
     formData.append('name', name);
     formData.append('category', category);
@@ -59,6 +61,8 @@ const Home = () => {
     } catch (err) {
       console.error(err);
       setError('Lataus epäonnistui.');
+    } finally {
+      setIsLoading(false); // Piilota "Ladataan..."
     }
   };
   const renderSubcategoryOptions = () => {
@@ -100,6 +104,7 @@ const Home = () => {
             onChange={(e) => setCategory(e.target.value)}
             required
           >
+            <option value="" disabled>Valitse kategoria...</option>
             <option value="top">Yläosa</option>
             <option value="bottom">Alaosa</option>
             <option value="outerwear">Takki</option>
@@ -119,7 +124,7 @@ const Home = () => {
         </div>
         <button type="submit">Lisää vaate</button>
       </form>
-
+      {isLoading && <p>Ladataan...</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <button onClick={handleLogout}>Kirjaudu ulos</button>
