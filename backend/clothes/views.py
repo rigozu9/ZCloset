@@ -6,7 +6,7 @@ from rest_framework.generics import DestroyAPIView
 from rest_framework import status
 from .models import ClothingItem
 from .serializers import ClothingItemSerializer
-from .utils import get_dominant_color, closest_css_color, detect_clothing_category
+from .utils import get_dominant_color, detect_clothing_category
 
 class WardrobeView(APIView):
     permission_classes = [IsAuthenticated]
@@ -24,8 +24,7 @@ class WardrobeView(APIView):
             if item.image:
                 try:
                     image_path = item.image.path
-                    rgb = get_dominant_color(image_path)
-                    color_name = closest_css_color(rgb)
+                    color_name = get_dominant_color(image_path)
                     item.color = color_name
                     item.save(update_fields=['color'])
                 except Exception as e:
@@ -43,9 +42,8 @@ class DetectColorAndCategoryView(APIView):
             item = ClothingItem.objects.get(id=clothing_id, user=request.user)
             image_path = item.image.path
 
-            # 🧠 Tunnista väri
-            rgb = get_dominant_color(image_path)
-            color_name = closest_css_color(rgb)
+            # ✅ Tunnista väri suoraan nimimuodossa
+            color_name = get_dominant_color(image_path)
 
             # 👕 Tunnista kategoria
             category = detect_clothing_category(image_path)
@@ -60,6 +58,7 @@ class DetectColorAndCategoryView(APIView):
         except Exception as e:
             print('Virhe tunnistuksessa:', str(e))
             return Response({'error': 'Tunnistus epäonnistui'}, status=500)
+
         
 class ClothingItemDeleteView(DestroyAPIView):
     serializer_class = ClothingItemSerializer

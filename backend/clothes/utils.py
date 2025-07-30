@@ -6,7 +6,6 @@ import webcolors
 from rembg import remove
 from PIL import Image
 import io
-import matplotlib.pyplot as plt
 import torch
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 import os
@@ -48,18 +47,23 @@ CSS3_NAMES = {
     'coral': '#ff7f50',
     'khaki': '#f0e68c',
     'lavender': '#e6e6fa',
-    'chocolate': '#d2691e'
+    'chocolate': '#d2691e',
+    'army green': '#4b5320',
+    'sage': '#9caf88',
 }
 
 def closest_css_color(rgb):
     def rgb_distance(c1, c2):
-        return sum((a - b) ** 2 for a, b in zip(c1, c2))
+        return sum((int(a) - int(b)) ** 2 for a, b in zip(c1, c2))
 
     min_dist = float('inf')
     closest_name = None
 
     for name, hex_value in CSS3_NAMES.items():
-        rgb_value = webcolors.hex_to_rgb(hex_value)
+        try:
+            rgb_value = webcolors.hex_to_rgb(hex_value)
+        except ValueError:
+            continue
         dist = rgb_distance(rgb, rgb_value)
         if dist < min_dist:
             min_dist = dist
@@ -68,29 +72,34 @@ def closest_css_color(rgb):
     return closest_name
 
 def get_dominant_color(image_path, k=3, save_cropped=True, show=False):
-    # Poista tausta
     with open(image_path, 'rb') as f:
         input_image = f.read()
     output = remove(input_image)
 
-    # Lue PIL-kuva ja muunna numpy-taulukoksi
     image = Image.open(io.BytesIO(output)).convert('RGB')
     np_image = np.array(image)
 
-    # 💾 Tallenna aina croppattu kuva
     if save_cropped:
         save_and_show_cropped_image(np_image, save_path="cropped_output.png", show=show)
 
-    # Väriklusterointi
     pixels = np_image.reshape((-1, 3))
-    pixels = pixels[~np.all(pixels == [0, 0, 0], axis=1)]  # Poista mustat pikselit
+    pixels = pixels[~np.all(pixels == [0, 0, 0], axis=1)]
+
+    pixels_lab = cv2.cvtColor(pixels.reshape(-1, 1, 3).astype(np.uint8), cv2.COLOR_RGB2LAB).reshape(-1, 3)
 
     kmeans = KMeans(n_clusters=k, n_init='auto')
-    kmeans.fit(pixels)
-
+    kmeans.fit(pixels_lab)
     counts = Counter(kmeans.labels_)
-    dominant = kmeans.cluster_centers_[counts.most_common(1)[0][0]]
-    return tuple(map(int, dominant))
+
+    sorted_clusters = counts.most_common()
+
+    top_colors_rgb = []
+    for idx, _ in sorted_clusters:
+        lab = kmeans.cluster_centers_[idx].astype(np.uint8).reshape(1, 1, 3)
+        rgb = cv2.cvtColor(lab, cv2.COLOR_LAB2RGB)[0][0]
+        top_colors_rgb.append(tuple(rgb))
+
+    return closest_css_color(top_colors_rgb[0])
 
 def detect_clothing_category(image_path):
     image = Image.open(image_path).convert("RGB")
@@ -102,14 +111,5 @@ def detect_clothing_category(image_path):
     return model.config.id2label[predicted_class_idx]
 
 def save_and_show_cropped_image(np_image, save_path="cropped_output.png", show=True):
-    """
-    Tallentaa numpy-muotoisen kuvan tiedostoksi ja näyttää sen tarvittaessa.
-    
-    Args:
-        np_image (np.ndarray): Kuva numpy-muodossa
-        save_path (str): Polku tallennettavalle tiedostolle
-        show (bool): Näytetäänkö kuva matplotlibilla
-    """
-    # Muunna numpy -> PIL ja tallenna
     pil_image = Image.fromarray(np_image)
     pil_image.save(save_path)
