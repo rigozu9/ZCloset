@@ -7,6 +7,14 @@ from rembg import remove
 from PIL import Image
 import io
 import matplotlib.pyplot as plt
+import torch
+from transformers import AutoImageProcessor, AutoModelForImageClassification
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "clothing_detection_model")
+model = AutoModelForImageClassification.from_pretrained(MODEL_PATH)
+processor = AutoImageProcessor.from_pretrained(MODEL_PATH)
 
 # Laajennettu CSS3-värilista
 CSS3_NAMES = {
@@ -84,6 +92,14 @@ def get_dominant_color(image_path, k=3, save_cropped=True, show=False):
     dominant = kmeans.cluster_centers_[counts.most_common(1)[0][0]]
     return tuple(map(int, dominant))
 
+def detect_clothing_category(image_path):
+    image = Image.open(image_path).convert("RGB")
+    inputs = processor(images=image, return_tensors="pt")
+    with torch.no_grad():
+        outputs = model(**inputs)
+        logits = outputs.logits
+        predicted_class_idx = logits.argmax(-1).item()
+    return model.config.id2label[predicted_class_idx]
 
 def save_and_show_cropped_image(np_image, save_path="cropped_output.png", show=True):
     """

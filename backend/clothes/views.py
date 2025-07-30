@@ -6,7 +6,7 @@ from rest_framework.generics import DestroyAPIView
 from rest_framework import status
 from .models import ClothingItem
 from .serializers import ClothingItemSerializer
-from .utils import get_dominant_color, closest_css_color
+from .utils import get_dominant_color, closest_css_color, detect_clothing_category
 
 class WardrobeView(APIView):
     permission_classes = [IsAuthenticated]
@@ -34,7 +34,7 @@ class WardrobeView(APIView):
             return Response(ClothingItemSerializer(item).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class DetectColorView(APIView):
+class DetectColorAndCategoryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -43,16 +43,23 @@ class DetectColorView(APIView):
             item = ClothingItem.objects.get(id=clothing_id, user=request.user)
             image_path = item.image.path
 
+            # 🧠 Tunnista väri
             rgb = get_dominant_color(image_path)
             color_name = closest_css_color(rgb)
 
-            return Response({ 'color': color_name })
+            # 👕 Tunnista kategoria
+            category = detect_clothing_category(image_path)
+
+            return Response({
+                'color': color_name,
+                'category': category
+            })
 
         except ClothingItem.DoesNotExist:
-            return Response({ 'error': 'Vaatetta ei löytynyt' }, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Vaatetta ei löytynyt'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            print('Virhe värin tunnistuksessa:', str(e))
-            return Response({ 'error': 'Tunnistus epäonnistui' }, status=500)
+            print('Virhe tunnistuksessa:', str(e))
+            return Response({'error': 'Tunnistus epäonnistui'}, status=500)
         
 class ClothingItemDeleteView(DestroyAPIView):
     serializer_class = ClothingItemSerializer

@@ -12,11 +12,12 @@ export const getMyWardrobe = () => {
   return api.get('/api/wardrobe/');
 };
 
-export const detectClothingColor = (clothingId) => {
-  return api.post('/api/detect-color/', {
+export const detectClothingAndCategoryColor = (clothingId) => {
+  return api.post('/api/detect-color_and_category/', {
     clothing_id: clothingId,
   });
 };
+// detectClothingAndCategoryColor
 
 export const deleteClothingItem = (id) => {
   return api.delete(`api/wardrobe/${id}/`);
