@@ -3,6 +3,21 @@ import { logout, getUserInfo } from '../api/auth';
 import { useNavigate } from 'react-router-dom';
 import { uploadClothingItem } from '../api/wardrobe';
 import useNavigationHelpers from '../hooks/useNavigationHelpers';
+import {
+  Container,   // ← Tämä puuttui!
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Stack,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Alert,
+} from '@mui/material';
+
+
 
 const Home = () => {
   const [username, setUsername] = useState('');
@@ -65,71 +80,97 @@ const Home = () => {
       setIsLoading(false); // Piilota "Ladataan..."
     }
   };
-  const renderSubcategoryOptions = () => {
-    const options = subcategoryMap[category] || [];
-    return (
-      <div>
-        <label>Alakategoria:</label>
-        <select
-          value={subcategory}
-          onChange={(e) => setSubcategory(e.target.value)}
-          required
-        >
-          <option value="">Valitse...</option>
-          {options.map((sub, idx) => (
-            <option key={idx} value={sub}>{sub}</option>
-          ))}
-        </select>
-      </div>
-    );
-  };
   return (
-    <div>
-      <h2>Tervetuloa ZClosettiin: {username}</h2>
-
+    <Container maxWidth="sm">
+      <Box sx={{ mt: 6 }}>
+        <Typography variant="h5" component="h2" align="center" gutterBottom>
+          Tervetuloa ZClosettiin, {username}
+        </Typography>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Vaatekappaleen nimi:</label>
-          <input
-            type="text"
+        <Stack spacing={2}>
+          <TextField
+            label="Vaatekappaleen nimi"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            fullWidth
             required
           />
-        </div>
-        <div>
-          <label>Kategoria:</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
+
+          <FormControl fullWidth required>
+            <InputLabel id="category-label">Kategoria</InputLabel>
+            <Select
+              labelId="category-label"
+              value={category}
+              label="Kategoria"
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <MenuItem value="top">Yläosa</MenuItem>
+              <MenuItem value="bottom">Alaosa</MenuItem>
+              <MenuItem value="outerwear">Takki</MenuItem>
+              <MenuItem value="shoes">Kengät</MenuItem>
+              <MenuItem value="accessory">Asuste</MenuItem>
+              <MenuItem value="other">Muu</MenuItem>
+            </Select>
+          </FormControl>
+
+          {category && (
+            <FormControl fullWidth required>
+              <InputLabel id="subcategory-label">Alakategoria</InputLabel>
+              <Select
+                labelId="subcategory-label"
+                value={subcategory}
+                label="Alakategoria"
+                onChange={(e) => setSubcategory(e.target.value)}
+              >
+                {subcategoryMap[category].map((sub, idx) => (
+                  <MenuItem key={idx} value={sub}>
+                    {sub}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+
+          <Button
+            variant="outlined"
+            component="label"
+            fullWidth
           >
-            <option value="" disabled>Valitse kategoria...</option>
-            <option value="top">Yläosa</option>
-            <option value="bottom">Alaosa</option>
-            <option value="outerwear">Takki</option>
-            <option value="shoes">Kengät</option>
-            <option value="accessory">Asuste</option>
-            <option value="other">Muu</option>
-          </select>
-        </div>
-        {category && renderSubcategoryOptions()}
-        <div>
-          <label>Valitse kuva:</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImage(e.target.files[0])}
-          />
-        </div>
-        <button type="submit">Lisää vaate</button>
+            Valitse kuva
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={(e) => setImage(e.target.files[0])}
+            />
+          </Button>
+
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            disabled={isLoading}
+          >
+            {isLoading ? 'Ladataan...' : 'Lisää vaate'}
+          </Button>
+
+          {success && <Alert severity="success">{success}</Alert>}
+          {error && <Alert severity="error">{error}</Alert>}
+
+          <Button onClick={handleLogout} fullWidth variant="text">
+            Kirjaudu ulos
+          </Button>
+          <Button onClick={goToWardrobe} fullWidth variant="text">
+            Näytä vaatekaappi
+          </Button>
+        </Stack>
       </form>
+
       {isLoading && <p>Ladataan...</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button onClick={handleLogout}>Kirjaudu ulos</button>
-      <button onClick={goToWardrobe}>Näytä vaatekaappi</button>
-    </div>
+      </Box>
+    </Container>
   );
 };
 
