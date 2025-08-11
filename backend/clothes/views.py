@@ -3,9 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import DestroyAPIView
-from rest_framework import status
-from .models import ClothingItem
-from .serializers import ClothingItemSerializer
+from rest_framework import status, viewsets, permissions
+from .models import ClothingItem, Outfit
+from .serializers import ClothingItemSerializer, OutfitReadSerializer, OutfitWriteSerializer
 from .utils import get_dominant_color, detect_clothing_category
 
 class WardrobeView(APIView):
@@ -73,3 +73,16 @@ class ClothingItemDeleteView(DestroyAPIView):
     def delete(self, request, *args, **kwargs):
         print(f"[DEBUG] Poistetaan vaate id = {kwargs.get('pk')}, käyttäjä = {request.user}")
         return super().delete(request, *args, **kwargs)
+    
+class IsOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return getattr(obj, "user_id", None) == request.user.id
+
+class OutfitViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
+
+    def get_queryset(self):
+        return Outfit.objects.filter(user=self.request.user).prefetch_related("outfit_items__item")
+
+    def get_serializer_class(self):
+        return OutfitWriteSerializer if self.action in ["create","update","partial_update"] else OutfitReadSerializer
