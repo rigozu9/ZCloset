@@ -8,10 +8,12 @@ import {
   Button,
   Alert,
 } from '@mui/material';
+import { getUserInfo } from '../api/auth';
 
 const Outfits = () => {
   const [outfits, setOutfits] = useState([]);
   const [error, setError] = useState('');
+  const [username, setUsername] = useState('');
   const { goToHome } = useNavigationHelpers();
 
   useEffect(() => {
@@ -21,6 +23,12 @@ const Outfits = () => {
         setError('Virhe haettaessa asuja');
         console.error(err);
       });
+    getUserInfo()
+        .then(res => setUsername(res.data.username))
+        .catch(err => {
+        console.error(err);
+        setUsername(''); // fallback
+        });
   }, []);
 
   const handleDeleteOutfit = async (outfitId) => {
@@ -36,7 +44,7 @@ const Outfits = () => {
   return (
     <Box sx={{ mt: 6, mx: 2 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Asut
+        {username ? `${username}:n outfitit` : 'Omat outfitit'}
       </Typography>
       
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}

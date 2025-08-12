@@ -29,7 +29,6 @@ const WardrobeItem = ({ item, onDelete }) => {
       setLoading(false);
     }
   };
-  console.log(item);
 
   const handleDelete = async () => {
     try {
@@ -44,7 +43,7 @@ const WardrobeItem = ({ item, onDelete }) => {
     <Card sx={{ maxWidth: 345, height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardMedia
         component="img"
-        height="200"
+        height="300"
         image={`http://localhost:8000${item.image}`}
         alt={item.name}
         sx={{ objectFit: 'cover' }}
