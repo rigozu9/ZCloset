@@ -22,3 +22,7 @@ export const detectClothingAndCategoryColor = (clothingId) => {
 export const deleteClothingItem = (id) => {
   return api.delete(`api/wardrobe/${id}/`);
 };
+
+export const getOutfits = (id) => {
+  return api.delete(`api/outfits/${id}/`);
+};
