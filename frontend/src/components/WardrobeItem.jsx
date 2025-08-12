@@ -1,5 +1,14 @@
 import { useState } from 'react';
 import { detectClothingAndCategoryColor, deleteClothingItem  } from '../api/wardrobe';
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Typography,
+  Button,
+  Box,
+} from '@mui/material';
 
 const WardrobeItem = ({ item, onDelete }) => {
   const [color, setColor] = useState(null);
@@ -32,21 +41,53 @@ const WardrobeItem = ({ item, onDelete }) => {
   };
 
   return (
-    <div>
-      <img
-        src={`http://localhost:8000${item.image}`}
+    <Card sx={{ maxWidth: 345, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <CardMedia
+        component="img"
+        height="200"
+        image={`http://localhost:8000${item.image}`}
         alt={item.name}
-        style={{ width: '150px', borderRadius: '8px' }}
+        sx={{ objectFit: 'cover' }}
       />
-      <p>{item.name}</p>
-      <p>Item color: {item.color}</p>
-      <button onClick={handleDetectColor} disabled={loading}>
-        {loading ? 'Tunnistetaan...' : 'Tunnista väri ja kategoria'}
-      </button>
-      {color && <p>Väri: {color}</p>}
-      {category && <p>Category: {category}</p>}
-      <button onClick={handleDelete}>Poista</button>
-    </div>
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="h3" gutterBottom>
+          {item.name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          Väri: {item.color}
+        </Typography>
+        {color && (
+          <Typography variant="body2" color="text.secondary">
+            Tunnistettu väri: {color}
+          </Typography>
+        )}
+        {category && (
+          <Typography variant="body2" color="text.secondary">
+            Tunnistettu kategoria: {category}
+          </Typography>
+        )}
+      </CardContent>
+      <CardActions sx={{ flexDirection: 'column', gap: 1 }}>
+        <Button 
+          variant="outlined" 
+          onClick={handleDetectColor} 
+          disabled={loading}
+          fullWidth
+          size="small"
+        >
+          {loading ? 'Tunnistetaan...' : 'Tunnista väri ja kategoria'}
+        </Button>
+        <Button 
+          variant="contained" 
+          color="error" 
+          onClick={handleDelete}
+          fullWidth
+          size="small"
+        >
+          Poista
+        </Button>
+      </CardActions>
+    </Card>
   );
 };
 

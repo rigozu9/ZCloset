@@ -29,11 +29,11 @@ const Home = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { goToWardrobe } = useNavigationHelpers();
+  const { goToWardrobe, goToOutfits } = useNavigationHelpers();
 
   const subcategoryMap = {
-    top: ['T-paita', 'Huppari', 'Kauluspaita', 'Knit'],
-    bottom: ['Farkut', 'Shortsit', 'Hame', 'Puvun housut'],
+    top: ['T-paita', 'Huppari', 'Kauluspaita', 'Knit', 'Svetari'],
+    bottom: ['Farkut', 'Cargohousut', 'Shortsit', 'Hame', 'Puvun housut'],
     outerwear: ['Coach jacket', 'Bomber', 'Bleiseri'],
     shoes: ['Tennarit', 'Saappaat', 'Sandaalit'],
     accessory: ['Laukku', 'Vyö', 'Lippis', 'Kaulakoru'],
@@ -157,11 +157,14 @@ const Home = () => {
           {success && <Alert severity="success">{success}</Alert>}
           {error && <Alert severity="error">{error}</Alert>}
 
-          <Button onClick={handleLogout} fullWidth variant="text">
-            Kirjaudu ulos
-          </Button>
           <Button onClick={goToWardrobe} fullWidth variant="text">
             Näytä vaatekaappi
+          </Button>
+          <Button onClick={goToOutfits} fullWidth variant="text">
+            Selaa outfitteja
+          </Button>
+          <Button onClick={handleLogout} fullWidth variant="text">
+            Kirjaudu ulos
           </Button>
         </Stack>
       </form>

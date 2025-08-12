@@ -3,6 +3,13 @@ import { getMyWardrobe } from '../api/wardrobe';
 import { getUserInfo } from '../api/auth';
 import useNavigationHelpers from '../hooks/useNavigationHelpers';
 import WardrobeItem from '../components/WardrobeItem';
+import {
+  Box,
+  Typography,
+  Button,
+  Alert,
+  Grid,
+} from '@mui/material';
 
 const Wardrobe = () => {
   const [items, setItems] = useState([]);
@@ -34,18 +41,29 @@ const Wardrobe = () => {
 
 
   return (
-    <div>
-      <h2>{username ? `${username}:n vaatekaappi` : 'Oma vaatekaappi'}</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-        {items.map(item => (
-          <WardrobeItem key={item.id} item={item} onDelete={handleItemDelete}/>
-        ))}
-      </div>
+    <Box sx={{ mt: 6, mx: 2 }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        {username ? `${username}:n vaatekaappi` : 'Oma vaatekaappi'}
+      </Typography>
       
-      <button onClick={goToHome}>Palaa kotisivulle</button>
-    </div>
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+
+      <Grid container spacing={2} sx={{ mb: 4 }}>
+        {items.map(item => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
+            <WardrobeItem item={item} onDelete={handleItemDelete}/>
+          </Grid>
+        ))}
+      </Grid>
+      
+      <Button 
+        variant="outlined" 
+        onClick={goToHome}
+        size="large"
+      >
+        Palaa kotisivulle
+      </Button>
+    </Box>
   );
 };
 

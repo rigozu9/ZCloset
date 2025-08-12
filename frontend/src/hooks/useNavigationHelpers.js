@@ -6,6 +6,7 @@ const useNavigationHelpers = () => {
   return {
     goToHome: () => navigate('/home'),
     goToWardrobe: () => navigate('/wardrobe'),
+    goToOutfits: () => navigate('/outfits'),
     goToLogin: () => navigate('/login'),
     goToRegister: () => navigate('/'),
     goBack: () => navigate(-1),
