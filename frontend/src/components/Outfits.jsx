@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getOutfits } from '../api/outfits';
+import { getOutfits, deleteOutfit } from '../api/outfits';
 import OutfitItem from './OutfitItem';
 import useNavigationHelpers from '../hooks/useNavigationHelpers';
 import {
@@ -23,6 +23,16 @@ const Outfits = () => {
       });
   }, []);
 
+  const handleDeleteOutfit = async (outfitId) => {
+    try {
+      await deleteOutfit(outfitId);
+      setOutfits(prev => prev.filter(outfit => outfit.id !== outfitId));
+    } catch (err) {
+      setError('Virhe poistettaessa asua');
+      console.error(err);
+    }
+  };
+
   return (
     <Box sx={{ mt: 6, mx: 2 }}>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -45,7 +55,17 @@ const Outfits = () => {
               backgroundColor: 'background.paper'
             }}
           >
-            <Typography variant="h5" gutterBottom>{outfit.name}</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+              <Typography variant="h5">{outfit.name}</Typography>
+              <Button 
+                variant="contained" 
+                color="error" 
+                size="small"
+                onClick={() => handleDeleteOutfit(outfit.id)}
+              >
+                Poista asu
+              </Button>
+            </Box>
             <Typography variant="body1" color="text.secondary" gutterBottom>
               {outfit.notes}
             </Typography>
