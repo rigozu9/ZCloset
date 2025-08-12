@@ -13,6 +13,9 @@ import {
   Select,
   MenuItem,
   Alert,
+  Card,
+  CardMedia,
+  CardContent,
 } from '@mui/material';
 
 
@@ -23,6 +26,7 @@ const Home = () => {
   const [category, setCategory] = useState('');
   const [subcategory, setSubcategory] = useState('');
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +49,22 @@ const Home = () => {
       });
   }, []);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      // Luo URL esikatselu varten
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreview(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImage(null);
+      setImagePreview(null);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -63,7 +83,9 @@ const Home = () => {
       setSuccess('Vaate lisätty onnistuneesti!');
       setName('');
       setCategory('other');
+      setSubcategory('');
       setImage(null);
+      setImagePreview(null);
     } catch (err) {
       console.error(err);
       setError('Lataus epäonnistui.');
@@ -132,9 +154,22 @@ const Home = () => {
               type="file"
               accept="image/*"
               hidden
-              onChange={(e) => setImage(e.target.files[0])}
+              onChange={handleImageChange}
             />
           </Button>
+
+          {/* Kuvan esikatselu */}
+          {imagePreview && (
+            <Card sx={{ maxWidth: 300, mx: 'auto' }}>
+              <CardMedia
+                component="img"
+                height="280"
+                image={imagePreview}
+                alt="Valittu kuva"
+                sx={{ objectFit: 'cover' }}
+              />
+            </Card>
+          )}
 
           <Button
             type="submit"
