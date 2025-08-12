@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { getMyWardrobe } from '../api/wardrobe';
 import { getUserInfo } from '../api/auth';
 import { createOutfit } from '../api/outfits';
-import useNavigationHelpers from '../hooks/useNavigationHelpers';
 import WardrobeItem from '../components/WardrobeItem';
 import {
   Box,
@@ -39,7 +38,6 @@ const Wardrobe = () => {
     accessory: [],
     other: []
   });
-  const { goToHome } = useNavigationHelpers();
 
   useEffect(() => {
     // Hae vaatteet
@@ -175,14 +173,6 @@ const Wardrobe = () => {
           </Grid>
         ))}
       </Grid>
-      
-      <Button 
-        variant="outlined" 
-        onClick={goToHome}
-        size="large"
-      >
-        Palaa kotisivulle
-      </Button>
 
       {/* Outfit Creation Dialog */}
       <Dialog open={showOutfitDialog} onClose={() => setShowOutfitDialog(false)} maxWidth="md" fullWidth>

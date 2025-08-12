@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { getOutfits, deleteOutfit } from '../api/outfits';
+import { getUserInfo } from '../api/auth';
 import OutfitItem from './OutfitItem';
-import useNavigationHelpers from '../hooks/useNavigationHelpers';
 import {
   Box,
   Typography,
   Button,
   Alert,
 } from '@mui/material';
-import { getUserInfo } from '../api/auth';
 
 const Outfits = () => {
   const [outfits, setOutfits] = useState([]);
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
-  const { goToHome } = useNavigationHelpers();
 
   useEffect(() => {
     getOutfits()
@@ -88,16 +86,6 @@ const Outfits = () => {
           </Box>
         ))
       )}
-      
-      <Box sx={{ mt: 4 }}>
-        <Button 
-          variant="outlined" 
-          onClick={goToHome}
-          size="large"
-        >
-          Palaa kotisivulle
-        </Button>
-      </Box>
     </Box>
   );
 };

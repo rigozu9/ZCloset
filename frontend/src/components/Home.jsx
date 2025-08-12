@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
-import { logout, getUserInfo } from '../api/auth';
-import { useNavigate } from 'react-router-dom';
+import { getUserInfo } from '../api/auth';
 import { uploadClothingItem } from '../api/wardrobe';
-import useNavigationHelpers from '../hooks/useNavigationHelpers';
 import {
   Container,   // ← Tämä puuttui!
   Box,
@@ -27,9 +25,7 @@ const Home = () => {
   const [image, setImage] = useState(null);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { goToWardrobe, goToOutfits } = useNavigationHelpers();
 
   const subcategoryMap = {
     top: ['T-paita', 'Huppari', 'Kauluspaita', 'Knit', 'Svetari'],
@@ -48,11 +44,6 @@ const Home = () => {
         setUsername(''); // fallback
       });
   }, []);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -157,15 +148,6 @@ const Home = () => {
           {success && <Alert severity="success">{success}</Alert>}
           {error && <Alert severity="error">{error}</Alert>}
 
-          <Button onClick={goToWardrobe} fullWidth variant="text">
-            Näytä vaatekaappi
-          </Button>
-          <Button onClick={goToOutfits} fullWidth variant="text">
-            Selaa outfitteja
-          </Button>
-          <Button onClick={handleLogout} fullWidth variant="text">
-            Kirjaudu ulos
-          </Button>
         </Stack>
       </form>
 
