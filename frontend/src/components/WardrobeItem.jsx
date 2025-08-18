@@ -43,10 +43,14 @@ const WardrobeItem = ({ item, onDelete }) => {
     <Card sx={{ maxWidth: 345, height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardMedia
         component="img"
-        height="280"
+        height="320"
         image={`http://localhost:8000${item.image}`}
         alt={item.name}
-        sx={{ objectFit: 'cover' }}
+        sx={{ 
+          objectFit: 'contain',
+          backgroundColor: '#f5f5f5',
+          imageRendering: 'crisp-edges'
+        }}
       />
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography variant="h6" component="h3" gutterBottom>

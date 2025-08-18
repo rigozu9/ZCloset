@@ -52,7 +52,22 @@ const Home = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Tarkista tiedostokoko (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setError('Kuva on liian suuri. Maksimikoko on 10MB.');
+        return;
+      }
+      
+      // Tarkista tiedostomuoto
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        setError('Sallitut kuvamuodot ovat: JPEG, JPG, PNG, WebP');
+        return;
+      }
+      
+      setError('');
       setImage(file);
+      
       // Luo URL esikatselu varten
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -152,7 +167,7 @@ const Home = () => {
             Valitse kuva
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
               hidden
               onChange={handleImageChange}
             />
@@ -160,13 +175,17 @@ const Home = () => {
 
           {/* Kuvan esikatselu */}
           {imagePreview && (
-            <Card sx={{ maxWidth: 300, mx: 'auto' }}>
+            <Card sx={{ maxWidth: 400, mx: 'auto' }}>
               <CardMedia
                 component="img"
-                height="280"
+                height="320"
                 image={imagePreview}
                 alt="Valittu kuva"
-                sx={{ objectFit: 'cover' }}
+                sx={{ 
+                  objectFit: 'contain',
+                  backgroundColor: '#f5f5f5',
+                  imageRendering: 'crisp-edges'
+                }}
               />
             </Card>
           )}
@@ -185,10 +204,6 @@ const Home = () => {
 
         </Stack>
       </form>
-
-      {isLoading && <p>Ladataan...</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
       </Box>
     </Container>
   );

@@ -7,7 +7,12 @@ const Navbar = () => {
   return (
     <AppBar position="fixed">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1, cursor: 'pointer' }}
+          onClick={goToHome}
+        >
           ZCloset
         </Typography>
         
