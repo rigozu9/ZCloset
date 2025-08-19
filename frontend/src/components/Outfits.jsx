@@ -13,10 +13,16 @@ const Outfits = () => {
   const [outfits, setOutfits] = useState([]);
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
+  // uploaded_at
 
   useEffect(() => {
     getOutfits()
-      .then(res => setOutfits(res.data))
+      .then(res =>  {
+        const sortedOutfitList = [...res.data].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
+        setOutfits(sortedOutfitList)
+      })
       .catch(err => {
         setError('Virhe haettaessa asuja');
         console.error(err);
