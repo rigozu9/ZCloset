@@ -71,6 +71,7 @@ const OutfitBuilder = () => {
       {/* Drop-alueet oikealla */}
       <Box sx={{ flex: 1 }}>
         <Typography variant="h5">Outfit builder</Typography>
+        <Typography variant="body1" sx={{ fontStyle: 'italic' }}>Raahaa kategorian päälle vaate. Voit poistaa vaatteen klikkaamalla</Typography>
         {dropTargets.map((target) => (
           <Paper
             key={target.key}
@@ -105,7 +106,13 @@ const OutfitBuilder = () => {
                     key={item.id}
                     src={`http://localhost:8000${item.image}`}
                     alt={item.name}
-                    style={{ width: 170, height: 170, objectFit: 'contain' }}
+                    onClick={() => {
+                        setSelectedItems(prev => ({
+                            ...prev,
+                            [target.key]: prev[target.key].filter(i => i.id !== item.id),
+                        }))
+                    }}
+                    style={{ width: 170, height: 170, objectFit: 'contain', cursor: 'pointer'}}
                 />
                 ))}
             </Box>
