@@ -2,7 +2,7 @@ import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import useNavigationHelpers from '../hooks/useNavigationHelpers';
 
 const Navbar = () => {
-  const { goToHome, goToWardrobe, goToOutfits, goToLogin } = useNavigationHelpers();
+  const { goToHome, goToWardrobe, goToOutfits, goToLogin, goToOutfitBuilder } = useNavigationHelpers();
 
   return (
     <AppBar position="fixed">
@@ -25,6 +25,9 @@ const Navbar = () => {
           </Button>
           <Button color="inherit" onClick={goToOutfits}>
             Outfitit
+          </Button>
+          <Button color="inherit" onClick={goToOutfitBuilder}>
+            Luo uusi outfit
           </Button>
           <Button color="inherit" onClick={goToLogin}>
             Kirjaudu ulos

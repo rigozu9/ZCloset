@@ -8,6 +8,7 @@ const useNavigationHelpers = () => {
     goToWardrobe: () => navigate('/wardrobe'),
     goToOutfits: () => navigate('/outfits'),
     goToLogin: () => navigate('/login'),
+    goToOutfitBuilder: () => navigate('/outfitbuilder'),
     goToRegister: () => navigate('/'),
     goBack: () => navigate(-1),
   };
