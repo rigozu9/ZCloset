@@ -7,6 +7,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Wardrobe from './components/Wardrobe';
 import Outfits from './components/Outfits';
 import Navbar from './components/Navbar';
+import OutfitBuilder from './components/OutfitBuilder';
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="/login" element={<SignIn />} />
           <Route path="/wardrobe" element={<Wardrobe />} />
           <Route path="/outfits" element={<Outfits />} />
+          <Route path="/outfitbuilder" element={<OutfitBuilder />} />
         </Routes>
       </Box>
     </Router>
