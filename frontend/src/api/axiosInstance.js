@@ -42,7 +42,10 @@ instance.interceptors.response.use(
         return axios(originalRequest);
       } catch (refreshError) {
         console.error("Refresh epäonnistui", refreshError);
-        // Voit ohjata käyttäjän uloskirjautumiseen tässä vaiheessa
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        window.location.replace('/login');
+        return Promise.reject(refreshError);
       }
     }
 

@@ -16,11 +16,12 @@ const App = () => {
       <Box sx={{ mt: 15 }}> {/* Add margin-top to account for fixed navbar */}
         <Routes>
           <Route path="/" element={<SignUp />} />
-          <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} /> 
           <Route path="/login" element={<SignIn />} />
-          <Route path="/wardrobe" element={<Wardrobe />} />
-          <Route path="/outfits" element={<Outfits />} />
-          <Route path="/outfitbuilder" element={<OutfitBuilder />} />
+          {/* Private routet on vain kirjautuneille */}
+          <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} /> 
+          <Route path="/wardrobe" element={<PrivateRoute><Wardrobe /></PrivateRoute>} /> 
+          <Route path="/outfits" element={<PrivateRoute><Outfits /></PrivateRoute>} /> 
+          <Route path="/outfitbuilder" element={<PrivateRoute><OutfitBuilder /></PrivateRoute>} /> 
         </Routes>
       </Box>
     </Router>
