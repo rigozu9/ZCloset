@@ -8,6 +8,11 @@ export const uploadClothingItem = (formData) => {
   });
 };
 
+export const getCategories = () => {
+  return api.get('/api/taxonomy/categories/');
+};
+
+
 export const getMyWardrobe = () => {
   return api.get('/api/wardrobe/');
 };
@@ -17,12 +22,7 @@ export const detectClothingAndCategoryColor = (clothingId) => {
     clothing_id: clothingId,
   });
 };
-// detectClothingAndCategoryColor
 
 export const deleteClothingItem = (id) => {
   return api.delete(`api/wardrobe/${id}/`);
-};
-
-export const getOutfits = (id) => {
-  return api.delete(`api/outfits/${id}/`);
 };

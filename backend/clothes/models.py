@@ -2,6 +2,35 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q
 
+class Category(models.Model):
+    slug = models.SlugField(primary_key=True, max_length=30)   # esim. "top"
+    name = models.CharField(max_length=50)                     # esim. "Yläosa"
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class Subcategory(models.Model):
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="subcategories"
+    )
+    slug = models.SlugField(max_length=40)   # esim. "t-paita"
+    name = models.CharField(max_length=60)   # esim. "T-paita"
+
+    class Meta:
+        ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["category", "slug"], name="uniq_sub_slug_per_cat"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.category.slug} / {self.name}"
+
 class ClothingItem(models.Model):
     CATEGORY_CHOICES = [
         ('top', 'Top'),
@@ -12,45 +41,16 @@ class ClothingItem(models.Model):
         ('other', 'Other'),
     ]
 
-    SUBCATEGORY_CHOICES = [
-        # Top
-        ('T-paita', 'T-paita'),
-        ('Huppari', 'Huppari'),
-        ('Kauluspaita', 'Kauluspaita'),
-        ('Knit', 'Knit'),
-        ('Svetari', 'Svetari'),
-
-        # Bottom
-        ('Farkut', 'Farkut'),
-        ('Cargohousut', 'Cargohousut'),
-        ('Shortsit', 'Shortsit'),
-        ('Hame', 'Hame'),
-        ('Puvun housut', 'Puvun housut'),
-
-        # Outerwear
-        ('Coach jacket', 'Coach jacket'),
-        ('Bomber', 'Bomber'),
-        ('Bleiseri', 'Bleiseri'),
-
-        # Shoes
-        ('Tennarit', 'Tennarit'),
-        ('Saappaat', 'Saappaat'),
-        ('Sandaalit', 'Sandaalit'),
-
-        # Accessory
-        ('Laukku', 'Laukku'),
-        ('Vyö', 'Vyö'),
-        ('Lippis', 'Lippis'),
-        ('Kaulakoru', 'Kaulakoru'),
-
-        # Other
-        ('Muu vaate', 'Muu vaate'),
-    ]
-
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='clothing_images/', blank=True, null=True)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other')
-    subcategory = models.CharField(max_length=50, choices=SUBCATEGORY_CHOICES, default='Muu vaate')
+    category = models.ForeignKey(
+        Category, on_delete=models.PROTECT, related_name="items",
+        null=True, blank=True
+    )
+    subcategory = models.ForeignKey(
+        Subcategory, on_delete=models.PROTECT, related_name="items",
+        null=True, blank=True
+    )
     color = models.CharField(max_length=30, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wardrobe')
     uploaded_at = models.DateTimeField(auto_now_add=True)
